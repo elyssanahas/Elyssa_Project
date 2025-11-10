@@ -25,7 +25,7 @@ export const getThemeConfig = (theme: ColorScheme): ThemeOption => ({
     grayscale: {
       hue: 210,
       tint: 8,
-      shade: theme === "dark" ? -2 : -5,
+      shade: theme === "dark" ? -2 : -4,
     },
     // University pale-blue accent
     accent: {
