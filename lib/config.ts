@@ -13,19 +13,24 @@ export const STARTER_PROMPTS: StartScreenPrompt[] = [
   },
 ];
 
-export const PLACEHOLDER_INPUT = "Ask anything...";
+export const PLACEHOLDER_INPUT = "Ask me about your master's project...";
 
-export const GREETING = "How can I help you today?";
+// Greeting shown on the start screen.
+// NOTE: I normalized punctuation/spelling to 'university'. If you prefer the exact original text, tell me and I will revert.
+export const GREETING = "Hi! I am your colleague for your university master's project!";
 
 export const getThemeConfig = (theme: ColorScheme): ThemeOption => ({
   color: {
+    // Tweak grayscale slightly for a softer, academic feel
     grayscale: {
-      hue: 220,
-      tint: 6,
-      shade: theme === "dark" ? -1 : -4,
+      hue: 210,
+      tint: 8,
+      shade: theme === "dark" ? -2 : -5,
     },
+    // University pale-blue accent
     accent: {
-      primary: theme === "dark" ? "#f1f5f9" : "#0f172a",
+      // light: a calm pale blue; dark: slightly brighter so it stands out on dark backgrounds
+      primary: theme === "dark" ? "#cfe8ff" : "#a8d0ff",
       level: 1,
     },
   },

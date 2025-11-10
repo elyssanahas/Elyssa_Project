@@ -23,7 +23,8 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: Arial, Helvetica, sans-serif;
+  /* Use a professional serif font for a university theme. Times New Roman is a common web-safe serif. */
+  --font-sans: "Times New Roman", Times, serif;
   --font-mono: SFMono-Regular, Consolas, "Liberation Mono", monospace;
 }
 
