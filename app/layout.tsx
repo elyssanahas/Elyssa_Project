@@ -1,6 +1,6 @@
-import Script from "next/script";
 import type { Metadata } from "next";
 import "./globals.css";
+import ChatKitScript from "@/components/ChatKitScript";
 
 export const metadata: Metadata = {
   title: "AgentKit demo",
@@ -14,27 +14,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <head>
-        <Script
-          src="https://cdn.platform.openai.com/deployments/chatkit/chatkit.js"
-          strategy="afterInteractive"
-          onLoad={() => {
-            if (typeof window !== "undefined") {
-              window.dispatchEvent(new Event("chatkit-script-loaded"));
-            }
-          }}
-          onError={(e) => {
-            if (typeof window !== "undefined") {
-              window.dispatchEvent(
-                new CustomEvent("chatkit-script-error", {
-                  detail: (e as ErrorEvent)?.message ?? String(e),
-                })
-              );
-            }
-          }}
-        />
-      </head>
-      <body className="antialiased">{children}</body>
+      <head />
+      <body className="antialiased">
+        <ChatKitScript />
+        {children}
+      </body>
     </html>
   );
 }
