@@ -52,6 +52,12 @@ export function ChatKitPanel({
   const processedFacts = useRef(new Set<string>());
   const [errors, setErrors] = useState<ErrorState>(() => createInitialErrors());
   const [isInitializingSession, setIsInitializingSession] = useState(true);
+  const [lastSessionDebug, setLastSessionDebug] = useState<{
+    status: number | null;
+    ok: boolean | null;
+    body: string | null;
+    error: string | null;
+  }>({ status: null, ok: null, body: null, error: null });
   const isMountedRef = useRef(true);
   const [scriptStatus, setScriptStatus] = useState<
     "pending" | "ready" | "error"
@@ -203,6 +209,10 @@ export function ChatKitPanel({
 
         const raw = await response.text();
 
+        if (isMountedRef.current) {
+          setLastSessionDebug({ status: response.status, ok: response.ok, body: raw, error: null });
+        }
+
         if (isDev) {
           console.info("[ChatKitPanel] createSession response", {
             status: response.status,
@@ -250,6 +260,7 @@ export function ChatKitPanel({
             : "Unable to start ChatKit session.";
         if (isMountedRef.current) {
           setErrorState({ session: detail, retryable: false });
+          setLastSessionDebug({ status: null, ok: false, body: null, error: String(detail) });
         }
         throw error instanceof Error ? error : new Error(detail);
       } finally {
@@ -345,6 +356,20 @@ export function ChatKitPanel({
 
   return (
     <div className="relative pb-8 flex h-[90vh] w-full rounded-2xl flex-col overflow-hidden bg-white shadow-sm transition-colors dark:bg-slate-900">
+      {/* Debug overlay (small) */}
+      <div className="pointer-events-auto fixed top-4 right-4 z-50 w-80 rounded bg-white/95 p-3 text-xs text-slate-800 shadow dark:bg-slate-800 dark:text-slate-100">
+        <div className="font-medium mb-1">Debug</div>
+        <div>scriptStatus: {scriptStatus}</div>
+        <div>isInitializingSession: {String(isInitializingSession)}</div>
+        <div>hasError: {String(Boolean(blockingError))}</div>
+        <div>workflowId: {WORKFLOW_ID ? WORKFLOW_ID.slice(0, 24) : "(empty)"}</div>
+        <div>webcomponent: {isBrowser && Boolean(window.customElements?.get("openai-chatkit")) ? "registered" : "missing"}</div>
+        <div className="mt-2 font-medium">Last create-session</div>
+        <div>status: {lastSessionDebug.status ?? "-"}</div>
+        <div>ok: {String(lastSessionDebug.ok)}</div>
+        <div className="truncate">body: {lastSessionDebug.body ? lastSessionDebug.body.slice(0, 120) : "-"}</div>
+        {lastSessionDebug.error ? <div className="text-rose-600">err: {lastSessionDebug.error}</div> : null}
+      </div>
       <ChatKit
         key={widgetInstanceKey}
         control={chatkit.control}
